@@ -1,5 +1,8 @@
+import os
+
 from selenium import webdriver
-from selenium.webdriver.edge.options import Options
+from selenium.webdriver.edge.options import Options as EdgeOptions
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 
 
 class DriverManager:
@@ -59,7 +62,13 @@ class DriverManager:
         if headless is None:
             headless = self.hide_browser
 
-        options = Options()
+        browser = os.getenv("AUTOREWARDER_BROWSER", "edge").strip().lower()
+
+        if browser == "chromium":
+            options = ChromeOptions()
+            options.binary_location = os.getenv("CHROME_BIN", "/usr/bin/chromium")
+        else:
+            options = EdgeOptions()
         options.add_argument(f"--user-data-dir={self.profile_path}")
         options.add_argument("--profile-directory=Default")
         options.add_argument("--disable-blink-features=AutomationControlled")
@@ -88,7 +97,15 @@ class DriverManager:
             options.add_argument("--headless=new")
             options.add_argument("--disable-gpu")
 
-        _driver = webdriver.Edge(options=options)
+        if browser == "chromium":
+            driver_path = os.getenv("CHROMEDRIVER_PATH")
+            if driver_path:
+                service = webdriver.ChromeService(executable_path=driver_path)
+                _driver = webdriver.Chrome(service=service, options=options)
+            else:
+                _driver = webdriver.Chrome(options=options)
+        else:
+            _driver = webdriver.Edge(options=options)
 
         if mobile:
             # Turn the session into a genuine mobile one at the engine level.
