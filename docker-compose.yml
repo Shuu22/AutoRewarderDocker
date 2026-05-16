@@ -1,0 +1,20 @@
+services:
+  autorewarder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      platforms:
+        - linux/arm64
+    platform: linux/arm64
+    image: autorewarder:arm64
+    environment:
+      - AUTOREWARDER_BROWSER=chromium
+      - CHROME_BIN=/usr/bin/chromium
+      - CHROMEDRIVER_PATH=/usr/bin/chromedriver
+      - TZ=UTC
+    volumes:
+      - autorewarder_data:/root/.local/share/AutoRewarder
+    command: ["--help"]
+
+volumes:
+  autorewarder_data:
