@@ -1,0 +1,52 @@
+services:
+  autorewarder-web:
+    build: .
+    platform: linux/arm64
+    image: autorewarder:arm64
+    restart: unless-stopped
+    shm_size: "1gb"
+    environment:
+      AUTOREWARDER_BROWSER: chromium
+      CHROME_BIN: /usr/bin/chromium
+      CHROMEDRIVER_PATH: /usr/bin/chromedriver
+      WEBUI_HOST: 0.0.0.0
+      WEBUI_PORT: 8080
+      AR_ACCOUNT_ID: main
+      AR_ACCOUNT_LABEL: Main
+      AR_QUERIES_PC: 30
+      AR_QUERIES_MOBILE: 20
+      AR_SCHEDULE_ENABLED: "true"
+      WEBUI_USERNAME: ""
+      WEBUI_PASSWORD: ""
+    volumes:
+      - ./data:/home/app/.local/share/AutoRewarder
+    ports:
+      - "127.0.0.1:8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/api/status"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  setup-browser:
+    image: autorewarder:arm64
+    platform: linux/arm64
+    profiles: ["setup"]
+    shm_size: "1gb"
+    environment:
+      AR_ACCOUNT_ID: main
+    volumes:
+      - ./data:/home/app/.local/share/AutoRewarder
+    ports:
+      - "127.0.0.1:6080:6080"
+    command: ["setup"]
+
+  autorewarder-cli:
+    image: autorewarder:arm64
+    platform: linux/arm64
+    profiles: ["cli"]
+    shm_size: "1gb"
+    volumes:
+      - ./data:/home/app/.local/share/AutoRewarder
+    command: ["cli", "--help"]
