@@ -3,6 +3,7 @@ import os
 from selenium import webdriver
 from selenium.webdriver.edge.options import Options as EdgeOptions
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 
 class DriverManager:
@@ -100,7 +101,7 @@ class DriverManager:
         if browser == "chromium":
             driver_path = os.getenv("CHROMEDRIVER_PATH")
             if driver_path:
-                service = webdriver.ChromeService(executable_path=driver_path)
+                service = ChromeService(executable_path=driver_path)
                 _driver = webdriver.Chrome(service=service, options=options)
             else:
                 _driver = webdriver.Chrome(options=options)

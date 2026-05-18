@@ -1,0 +1,4 @@
+<!doctype html><html><head><meta charset="utf-8"><title>AutoRewarder WebUI</title><link rel="stylesheet" href="/static/style.css"></head>
+<body><h1>AutoRewarder WebUI</h1><p>Use SSH tunnel for security. Setup login: <code>docker compose --profile setup up setup-browser</code> then open <code>http://127.0.0.1:6080/vnc.html</code>.</p>
+<div><label>PC <input id="pc" value="30" type="number"></label><label>Mobile <input id="mobile" value="20" type="number"></label><label><input id="force" type="checkbox">Force</label><button onclick="runNow()">Run</button><button onclick="stopNow()">Stop</button></div>
+<pre id="status"></pre><pre id="logs"></pre><script src="/static/app.js"></script></body></html>
